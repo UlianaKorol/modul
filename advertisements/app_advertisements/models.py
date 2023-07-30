@@ -24,6 +24,12 @@ class Advertisement(models.Model):
     # Дата изменения/объявления + что изменилось
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f" Advertisement(id={self.id}, title={self.title}, price={self.price})"
+
+    class Meta:
+        db_table = 'advertisements'
+
     # Продавец (имя продавца, контакты для связи, отзывы)
     # Фото объявления
     # Рейтинг 

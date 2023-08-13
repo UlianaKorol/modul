@@ -1,9 +1,25 @@
 from django.db import models
 from django.contrib import admin
 from django.utils.html import format_html 
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class Advertisement(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        verbose_name='пользователь',
+        on_delete=models.CASCADE,
+    )
+
+    image = models.ImageField(
+        "Изображение",
+        upload_to='advertisemens/'
+    )
+
     # название товара
     # CharField - короткое текстовое поле
     # 'заголовок' - verbose_name - человекочитаемое название
@@ -36,6 +52,7 @@ class Advertisement(models.Model):
   
         return self.created_at.strftime("%d.%m.%Y в %H:%M:%S")
     
+    #Это для того, чтобы цветом помечалось, что ты сегодня  добавил изменение или просто объявление
     @admin.display(description='Дата изменения')
     def updated_date(self):
         from django.utils import timezone
@@ -44,6 +61,15 @@ class Advertisement(models.Model):
             return format_html('<span style="color:pink; font-weight:bold;"> Сегодня в {} </span>', updated_date)
   
         return self.updated_at.strftime("%d.%m.%Y в %H:%M:%S")
+    
+    #Фото, которое будет отображаться и на сайте и на админке
+    @admin.display(description="Фото")
+    def get_html_image(self):
+        if self.image:
+            return format_html(
+                '<img src="{}" style="max-height:80px; max-width:80px;">',
+                self.image.url
+            )
 
     def __str__(self):
         return f" Advertisement(id={self.id}, title={self.title}, price={self.price})"

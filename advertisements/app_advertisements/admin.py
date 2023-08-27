@@ -1,19 +1,20 @@
 from django.contrib import admin
 from .models import Advertisement
 
+
 class AdvertisementAdmin(admin.ModelAdmin):
-    #Настройки отображения модели Advertisement
-    list_display = ['id', 'title', 'description', 'price', 
-                    'created_date', 'updated_date', 'auction', 'get_html_image']
+    """Настроки отображения модели Advertisement."""
+    list_display = ['id', 'title', 'description',
+                    'price', 'created_date', 'updated_date', 'auction', 'get_html_image']
     list_filter = ['auction', 'created_at']
     actions = ['make_auction_is_false', 'make_auction_is_true']
+
     fieldsets = (
         (
-            'Общее', 
+            'Общее',
             (
                 {
-                    'fields': ('title', 'description', 'image'),
-                    'classes': ['collapse']
+                    'fields': ('title', 'description', 'image')
                 }
             )
         ),
@@ -36,6 +37,5 @@ class AdvertisementAdmin(admin.ModelAdmin):
     def make_auction_is_true(self, request, queryset):
         queryset.update(auction=True)
 
-#Регистрация модели в админке 
+# Регистрация модели в админке
 admin.site.register(Advertisement, AdvertisementAdmin)
-

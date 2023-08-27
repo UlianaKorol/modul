@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib import admin
-from django.utils.html import format_html 
+from django.db import models
+from django.utils.html import format_html
 from django.contrib.auth import get_user_model
 
 
@@ -16,31 +16,31 @@ class Advertisement(models.Model):
     )
 
     image = models.ImageField(
-        "Изображение",
-        upload_to='advertisemens/'
+        "изображение",
+        upload_to='advertisements/'
     )
 
-    # название товара
-    # CharField - короткое текстовое поле
+    # Название товара
+    # CharField - короткое текстове поле
     # 'заголовок' - verbose_name - человекочитаемое название
     title = models.CharField('заголовок', max_length=128)
 
     # Описание товара
-    # Длинное текстовое поле - TextField
+    # Длинное текстовое поле
     description = models.TextField('описание')
 
     # Цена
-    # Числовое поле с фиксированной точкой 
+    # числовое поле с фиксированной точкой
     price = models.DecimalField('цена', max_digits=10, decimal_places=2)
 
-    # Уместен ли торг?
-    # BooleanField - булевое поле (логическое) (окшн)
+    # Уместен ли торг
+    # Булевое поле (логическое) (окшн)
     auction = models.BooleanField('торг', help_text='Отметьте, если хотите торговаться')
 
-    # дата публикации
+    # Дата публикации
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Дата изменения/объявления + что изменилось
+    # Дата изменения/обновления + что изменилось
     updated_at = models.DateTimeField(auto_now=True)
 
     @admin.display(description='Дата создания')
@@ -48,21 +48,23 @@ class Advertisement(models.Model):
         from django.utils import timezone
         if self.created_at.date() == timezone.now().date():
             created_date = self.created_at.strftime("%H:%M:%S")
-            return format_html('<span style="color:green; font-weight:bold;"> Сегодня в {} </span>', created_date)
-  
+            return format_html(
+                '<span style="color:green; font-weight:bold;"> Сегодня в {} </span>',
+                created_date
+            )
         return self.created_at.strftime("%d.%m.%Y в %H:%M:%S")
-    
-    #Это для того, чтобы цветом помечалось, что ты сегодня  добавил изменение или просто объявление
+
     @admin.display(description='Дата изменения')
     def updated_date(self):
         from django.utils import timezone
         if self.updated_at.date() == timezone.now().date():
             updated_date = self.updated_at.strftime("%H:%M:%S")
-            return format_html('<span style="color:pink; font-weight:bold;"> Сегодня в {} </span>', updated_date)
-  
+            return format_html(
+                '<span style="color:red; font-weight:bold;"> Сегодня в {} </span>',
+                updated_date
+            )
         return self.updated_at.strftime("%d.%m.%Y в %H:%M:%S")
-    
-    #Фото, которое будет отображаться и на сайте и на админке
+
     @admin.display(description="Фото")
     def get_html_image(self):
         if self.image:
@@ -72,12 +74,13 @@ class Advertisement(models.Model):
             )
 
     def __str__(self):
-        return f" Advertisement(id={self.id}, title={self.title}, price={self.price})"
+        return f"Advertisement(id={self.id}, title={self.title}, price={self.price})"
 
     class Meta:
         db_table = 'advertisements'
 
+
     # Продавец (имя продавца, контакты для связи, отзывы)
     # Фото объявления
-    # Рейтинг 
+    # Рейтинг
     # В продаже/не в продаже - актуальность
